@@ -21,7 +21,40 @@ function init() {
         ],
       },
     ])
-    .then((answer) => console.log(answer))
+    .then((answer) => {
+      switch (answer.action) {
+        case "View All Departments":
+          console.log("You want to view all Departments");
+          init();
+          break;
+        case "View All Roles":
+          console.log("You want to view all Roles");
+          init();
+          break;
+        case "View All Employees":
+          console.log("You want to view all Employees");
+          init();
+          break;
+        case "Add a Department":
+          console.log("You want to Add a Department");
+          init();
+          break;
+        case "Add a Role":
+          console.log("You want to Add a Role");
+          init();
+          break;
+        case "Add an Employee":
+          console.log("You want to Add an Employee");
+          init();
+          break;
+        case "Update an Employee Role":
+          console.log("You want to Update an Employee Role");
+          init();
+          break;
+        default:
+          process.exit();
+      }
+    })
     .catch((err) => console.log(err));
 }
 
