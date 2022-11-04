@@ -1,0 +1,26 @@
+{
+  "name": "ch-12",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/naveed-mahmoudian/SQL-Employee-Tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/naveed-mahmoudian/SQL-Employee-Tracker/issues"
+  },
+  "homepage": "https://github.com/naveed-mahmoudian/SQL-Employee-Tracker#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "dotenv": "^16.0.3",
+    "inquirer": "^8.2.5",
+    "mysql2": "^2.3.3"
+  }
+}
