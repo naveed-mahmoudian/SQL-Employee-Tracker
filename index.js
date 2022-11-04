@@ -25,7 +25,7 @@ function init() {
       switch (answer.action) {
         case "View All Departments":
           console.log("You want to view all Departments");
-          init();
+          viewAllDepts();
           break;
         case "View All Roles":
           console.log("You want to view all Roles");
@@ -59,3 +59,14 @@ function init() {
 }
 
 init();
+
+function viewAllDepts() {
+  const sql = "SELECT * FROM department";
+  db.promise()
+    .query(sql)
+    .then((result) => {
+      console.table(result);
+      init();
+    })
+    .catch((err) => console.log(err));
+}
