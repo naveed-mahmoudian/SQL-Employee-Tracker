@@ -64,8 +64,8 @@ function viewAllDepts() {
   const sql = "SELECT * FROM department";
   db.promise()
     .query(sql)
-    .then((result) => {
-      console.table(result);
+    .then(([rows]) => {
+      console.table(rows);
       init();
     })
     .catch((err) => console.log(err));
