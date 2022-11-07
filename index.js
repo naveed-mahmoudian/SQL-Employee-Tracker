@@ -29,7 +29,7 @@ function init() {
           break;
         case "View All Roles":
           console.log("You want to view all Roles");
-          init();
+          viewAllRoles();
           break;
         case "View All Employees":
           console.log("You want to view all Employees");
@@ -62,6 +62,18 @@ init();
 
 function viewAllDepts() {
   const sql = "SELECT * FROM department";
+  db.promise()
+    .query(sql)
+    .then(([rows]) => {
+      console.table(rows);
+      init();
+    })
+    .catch((err) => console.log(err));
+}
+
+function viewAllRoles() {
+  const sql =
+    "SELECT role.id, role.title, department.name AS department, role.salary FROM role JOIN department ON role.department_id = department.id";
   db.promise()
     .query(sql)
     .then(([rows]) => {
