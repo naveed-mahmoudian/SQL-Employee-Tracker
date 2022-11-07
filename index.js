@@ -33,7 +33,7 @@ function init() {
           break;
         case "View All Employees":
           console.log("You want to view all Employees");
-          init();
+          viewAllEmps();
           break;
         case "Add a Department":
           console.log("You want to Add a Department");
@@ -61,7 +61,7 @@ function init() {
 init();
 
 function viewAllDepts() {
-  const sql = "SELECT * FROM department";
+  const sql = `SELECT * FROM department`;
   db.promise()
     .query(sql)
     .then(([rows]) => {
@@ -72,8 +72,24 @@ function viewAllDepts() {
 }
 
 function viewAllRoles() {
-  const sql =
-    "SELECT role.id, role.title, department.name AS department, role.salary FROM role JOIN department ON role.department_id = department.id";
+  const sql = `SELECT role.id, role.title, department.name AS department, role.salary 
+    FROM role 
+    JOIN department ON role.department_id = department.id`;
+  db.promise()
+    .query(sql)
+    .then(([rows]) => {
+      console.table(rows);
+      init();
+    })
+    .catch((err) => console.log(err));
+}
+
+function viewAllEmps() {
+  const sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
+  FROM employee
+  LEFT JOIN employee manager ON manager.id = employee.manager_id
+  LEFT JOIN role ON employee.role_id = role.id
+  LEFT JOIN department ON role.department_id = department.id`;
   db.promise()
     .query(sql)
     .then(([rows]) => {
