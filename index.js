@@ -41,7 +41,7 @@ function init() {
           break;
         case "Add a Role":
           console.log("You want to Add a Role");
-          init();
+          addRole();
           break;
         case "Add an Employee":
           console.log("You want to Add an Employee");
@@ -80,6 +80,57 @@ function addDept() {
         });
     })
     .catch((err) => console.log(err));
+}
+
+function addRole() {
+  let depts = [];
+  let dbRows = [];
+  db.promise()
+    .query("SELECT * FROM department")
+    .then(([rows]) => {
+      dbRows = rows;
+      rows.forEach((i) => depts.push(i.name));
+    })
+    .catch((err) => console.log(err));
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "role",
+        message: "What is the name of the Role?",
+      },
+      {
+        type: "input",
+        name: "salary",
+        message: "What is the salary of the role?",
+      },
+      {
+        type: "list",
+        name: "dept",
+        message: "Which Department does the Role belong to?",
+        choices: depts,
+      },
+    ])
+    .then((answers) => {
+      let deptId;
+      dbRows.forEach((i) => {
+        if (i.name === answers.dept) {
+          deptId = i.id;
+        }
+      });
+
+      const sql = `INSERT INTO role (title, salary, department_id)
+        VALUES ("${answers.role}", ${answers.salary}, ${deptId})`;
+      db.promise()
+        .query(sql)
+        .then(() => {
+          console.log(
+            `Added the ${answers.role} role to the ${answers.dept} department with a salary of $${answers.salary}`
+          );
+          init();
+        })
+        .catch((err) => console.log(err));
+    });
 }
 
 function viewAllDepts() {
