@@ -37,7 +37,7 @@ function init() {
           break;
         case "Add a Department":
           console.log("You want to Add a Department");
-          init();
+          addDept();
           break;
         case "Add a Role":
           console.log("You want to Add a Role");
@@ -59,6 +59,28 @@ function init() {
 }
 
 init();
+
+function addDept() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "dept",
+        message: "What is the name of the Department?",
+      },
+    ])
+    .then((answer) => {
+      const sql = `INSERT INTO department (name)
+    VALUES ("${answer.dept}")`;
+      db.promise()
+        .query(sql)
+        .then(() => {
+          console.log(`Added ${answer.dept} Department`);
+          init();
+        });
+    })
+    .catch((err) => console.log(err));
+}
 
 function viewAllDepts() {
   const sql = `SELECT * FROM department`;
