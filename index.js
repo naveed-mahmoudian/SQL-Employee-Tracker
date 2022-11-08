@@ -45,7 +45,7 @@ function init() {
           break;
         case "Add an Employee":
           console.log("You want to Add an Employee");
-          init();
+          addEmp();
           break;
         case "Update an Employee Role":
           console.log("You want to Update an Employee Role");
@@ -126,6 +126,78 @@ function addRole() {
         .then(() => {
           console.log(
             `Added the ${answers.role} role to the ${answers.dept} department with a salary of $${answers.salary}`
+          );
+          init();
+        })
+        .catch((err) => console.log(err));
+    });
+}
+
+function addEmp() {
+  let roleRows = [];
+  let roles = [];
+  let empRows = [];
+  let emps = [];
+  db.promise()
+    .query("SELECT * FROM role")
+    .then(([rows]) => {
+      roleRows = rows;
+      rows.forEach((i) => roles.push(i.title));
+    });
+  db.promise()
+    .query("SELECT * FROM employee")
+    .then(([rows]) => {
+      empRows = rows;
+      rows.forEach((i) => emps.push(`${i.first_name} ${i.last_name}`));
+    });
+
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "fName",
+        message: "What is the employee's first name?",
+      },
+      {
+        type: "input",
+        name: "lName",
+        message: "What is the employee's last name?",
+      },
+      {
+        type: "list",
+        name: "role",
+        message: "What is the employee's role?",
+        choices: roles,
+      },
+      {
+        type: "list",
+        name: "mgr",
+        message: "Who is the employee's manager?",
+        choices: emps,
+      },
+    ])
+    .then((answers) => {
+      let roleId;
+      let mgrId;
+      roleRows.forEach((i) => {
+        if (i.title === answers.role) {
+          roleId = i.id;
+        }
+      });
+      empRows.forEach((i) => {
+        let mgrFullName = `${i.first_name} ${i.last_name}`;
+        if (mgrFullName === answers.mgr) {
+          mgrId = i.id;
+        }
+      });
+
+      const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+      VALUES ("${answers.fName}", "${answers.lName}", ${roleId}, ${mgrId})`;
+      db.promise()
+        .query(sql)
+        .then(() => {
+          console.log(
+            `Added ${answers.fName} ${answers.lName} to Role: ${answers.role} with Manager: ${answers.mgr}`
           );
           init();
         })
