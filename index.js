@@ -49,7 +49,7 @@ function init() {
           break;
         case "Update an Employee Role":
           console.log("You want to Update an Employee Role");
-          init();
+          updateEmpRole();
           break;
         default:
           process.exit();
@@ -203,6 +203,69 @@ function addEmp() {
         })
         .catch((err) => console.log(err));
     });
+}
+
+function updateEmpRole() {
+  let roleRows = [];
+  let roles = [];
+  let empRows = [];
+  let emps = [];
+  db.promise()
+    .query("SELECT * FROM role")
+    .then(([rows]) => {
+      roleRows = rows;
+      rows.forEach((i) => roles.push(i.title));
+    });
+  db.promise()
+    .query("SELECT * FROM employee")
+    .then(([rows]) => {
+      empRows = rows;
+      rows.forEach((i) => emps.push(`${i.first_name} ${i.last_name}`));
+      updateQuestions();
+    });
+
+  function updateQuestions() {
+    inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "emp",
+          message: "Which Employee's role would you like to Update?",
+          choices: emps,
+        },
+        {
+          type: "list",
+          name: "role",
+          message: "Which Role do you want to assign the selected Employee?",
+          choices: roles,
+        },
+      ])
+      .then((answers) => {
+        let newRoleId;
+        let empId;
+        roleRows.forEach((i) => {
+          if (i.title === answers.role) {
+            newRoleId = i.id;
+          }
+        });
+        empRows.forEach((i) => {
+          let empFullName = `${i.first_name} ${i.last_name}`;
+          if (empFullName === answers.emp) {
+            empId = i.id;
+          }
+        });
+        const sql = `UPDATE employee
+        SET role_id = ${newRoleId}
+        WHERE id = ${empId}`;
+        db.promise()
+          .query(sql)
+          .then(() => {
+            console.log(`Updated ${answers.emp}'s Role to ${answers.role}`);
+            init();
+          })
+          .catch((err) => console.log(err));
+      });
+  }
 }
 
 function viewAllDepts() {
